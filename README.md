@@ -3,106 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Web Portal</title>
+    <title>Embedded Web Portal</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+        body, html {
             margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+            overflow: hidden; /* Prevents double scrollbars */
+        }
+
+        /* Top Navigation Bar */
+        .navbar {
+            height: 60px;
+            background: #2c3e50;
             display: flex;
-            flex-direction: column;
             align-items: center;
+            padding: 0 20px;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        header {
-            background-color: #2c3e50;
+        .navbar input {
+            flex-grow: 1;
+            margin: 0 15px;
+            padding: 8px;
+            border-radius: 4px;
+            border: none;
+        }
+
+        .navbar button {
+            padding: 8px 15px;
+            background: #27ae60;
+            border: none;
             color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* The Iframe Window */
+        #content-frame {
             width: 100%;
-            padding: 2rem 0;
-            text-align: center;
-        }
-
-        .search-container {
-            margin: 20px 0;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            width: 300px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            max-width: 1000px;
-            width: 90%;
-            padding: 20px;
-        }
-
-        .card {
+            height: calc(100vh - 60px); /* Subtracts navbar height */
+            border: none;
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.2s;
         }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h3 { margin-top: 0; color: #2980b9; }
-
-        .btn {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 8px 16px;
-            background-color: #2980b9;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-
-        .btn:hover { background-color: #3498db; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Personal Resource Portal</h1>
-    <div class="search-container">
-        <form action="https://www.google.com/search" method="GET">
-            <input type="text" name="q" placeholder="Search the web...">
-        </form>
-    </div>
-</header>
-
-<div class="grid-container">
-    <div class="card">
-        <h3>Education</h3>
-        <p>Learning and research tools.</p>
-        <a href="https://en.wikipedia.org" class="btn">Wikipedia</a>
-        <a href="https://www.khanacademy.org" class="btn">Khan Academy</a>
+    <div class="navbar">
+        <strong>Portal:</strong>
+        <input type="text" id="urlInput" placeholder="Enter URL (e.g., https://www.wikipedia.org)">
+        <button onclick="loadPage()">Go</button>
     </div>
 
-    <div class="card">
-        <h3>Development</h3>
-        <p>Coding and documentation.</p>
-        <a href="https://github.com" class="btn">GitHub</a>
-        <a href="https://stackoverflow.com" class="btn">Stack Overflow</a>
-    </div>
+    <iframe id="content-frame" src="about:blank"></iframe>
 
-    <div class="card">
-        <h3>Tools</h3>
-        <p>Utility and productivity.</p>
-        <a href="https://drive.google.com" class="btn">Google Drive</a>
-        <a href="https://trello.com" class="btn">Trello</a>
-    </div>
-</div>
+    <script>
+        function loadPage() {
+            const input = document.getElementById('urlInput').value;
+            const frame = document.getElementById('content-frame');
+            
+            // Basic check to ensure the URL starts with http/https
+            if (input.startsWith('http://') || input.startsWith('https://')) {
+                frame.src = input;
+            } else {
+                frame.src = 'https://' + input;
+            }
+        }
+
+        // Allow pressing "Enter" to trigger the button
+        document.getElementById("urlInput").addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                loadPage();
+            }
+        });
+    </script>
 
 </body>
 </html>
