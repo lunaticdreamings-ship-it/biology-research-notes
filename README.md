@@ -3,170 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Portal v3</title>
+    <title>Power Portal</title>
     <style>
-        :root {
-            --bg: #0f172a;
-            --panel: #1e293b;
-            --accent: #38bdf8;
-            --text: #f1f5f9;
-        }
-
-        body, html {
-            margin: 0; padding: 0; height: 100%;
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            display: flex;
-            overflow: hidden;
-        }
-
-        /* Sidebar - Responsive Collapse */
-        .sidebar {
-            width: 300px;
-            background: var(--panel);
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #334155;
-            transition: 0.3s;
-        }
-
-        .header { padding: 20px; text-align: center; border-bottom: 1px solid #334155; }
+        * { box-sizing: border-box; }
+        body, html { margin: 0; height: 100%; font-family: sans-serif; background: #121212; color: white; overflow: hidden; }
         
-        .search-box { padding: 15px; }
-        .search-box input {
-            width: 100%; padding: 12px;
-            border-radius: 8px; border: none;
-            background: #0f172a; color: white;
-            outline: 2px solid #334155;
-        }
+        .container { display: flex; height: 100vh; width: 100vw; }
 
-        .menu-area { flex-grow: 1; overflow-y: auto; padding: 10px; }
+        /* Sidebar */
+        .sidebar { width: 250px; background: #1e1e1e; border-right: 1px solid #333; display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar h2 { padding: 20px; color: #00d2ff; margin: 0; font-size: 1.2rem; }
+        .nav-group { padding: 10px; flex-grow: 1; overflow-y: auto; }
+        .btn { width: 100%; padding: 12px; margin-bottom: 5px; background: #2a2a2a; border: none; color: white; text-align: left; cursor: pointer; border-radius: 5px; }
+        .btn:hover { background: #3d3d3d; }
+
+        /* Main Window */
+        .viewer { flex-grow: 1; display: flex; flex-direction: column; background: #000; position: relative; }
         
-        .cat-label { 
-            padding: 15px 10px 5px; font-size: 11px; 
-            text-transform: uppercase; color: #94a3b8; letter-spacing: 1px;
-        }
+        /* The Address Bar */
+        .address-bar { background: #222; padding: 10px; display: flex; gap: 10px; align-items: center; }
+        .address-bar input { flex-grow: 1; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #111; color: #44ff44; font-family: monospace; }
 
-        .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px; margin: 4px 0;
-            border-radius: 8px; cursor: pointer;
-            text-decoration: none; color: inherit;
-        }
-        .nav-item:hover { background: #334155; }
-
-        /* Main Viewer */
-        .viewport {
+        /* THE FRAME */
+        #portal-frame {
+            width: 100%;
             flex-grow: 1;
-            display: flex;
-            flex-direction: column;
+            border: none;
+            background: white;
+            /* This ensures the frame is "on top" and clickable */
             position: relative;
+            z-index: 1;
         }
 
-        .top-bar {
-            height: 50px; background: #1e293b;
-            display: flex; align-items: center;
-            padding: 0 20px; justify-content: space-between;
-        }
-
-        #main-frame {
-            width: 100%; height: 100%;
-            border: none; background: #f8fafc;
-        }
-
-        /* Home Dashboard Overlay */
-        #dashboard {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: var(--bg);
-            z-index: 5; padding: 40px;
-            overflow-y: auto;
-        }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: var(--panel); padding: 20px;
-            border-radius: 12px; text-align: center;
-            cursor: pointer; border: 1px solid #334155;
-        }
-        .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-        .card i { font-size: 2rem; display: block; margin-bottom: 10px; }
+        .error-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #666; z-index: 0; }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <div class="header"><h2>PORTAL 3.0</h2></div>
-    <div class="search-box">
-        <input type="text" id="urlIn" placeholder="Search or type URL..." onkeydown="if(event.key==='Enter') launch()">
-    </div>
-    <div class="menu-area">
-        <div class="cat-label">Main Menu</div>
-        <div class="nav-item" onclick="goHome()">🏠 Home Dashboard</div>
-        
-        <div class="cat-label">🕹️ Gaming</div>
-        <div class="nav-item" onclick="launch('https://poki.com')">🎮 Poki Games</div>
-        <div class="nav-item" onclick="launch('https://www.crazygames.com')">🔥 Crazy Games</div>
-        
-        <div class="cat-label">🎬 Streaming</div>
-        <div class="nav-item" onclick="launch('https://www.youtube.com/embed')">📺 YouTube TV</div>
-    </div>
-</div>
-
-<div class="viewport">
-    <div class="top-bar">
-        <span id="url-display">Status: Dashboard</span>
-        <button onclick="popOut()" style="background:var(--accent); border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">External Open ↗</button>
-    </div>
-
-    <div id="dashboard">
-        <h1>Welcome</h1>
-        <div class="card-grid">
-            <div class="card" onclick="launch('https://poki.com')"><i>🕹️</i>Games</div>
-            <div class="card" onclick="launch('https://duckduckgo.com')"><i>🔍</i>Search</div>
-            <div class="card" onclick="launch('https://en.wikipedia.org')"><i>📚</i>Wiki</div>
+<div class="container">
+    <div class="sidebar">
+        <h2>PORTAL OS</h2>
+        <div class="nav-group">
+            <p style="font-size: 10px; color: #666;">GAMING</p>
+            <button class="btn" onclick="load('https://poki.com')">🕹️ Poki</button>
+            <button class="btn" onclick="load('https://www.crazygames.com')">🔥 CrazyGames</button>
+            
+            <p style="font-size: 10px; color: #666;">TOOLS</p>
+            <button class="btn" onclick="load('https://www.wikipedia.org')">📖 Wikipedia</button>
+            <button class="btn" onclick="load('https://duckduckgo.com/search?q=news')">🔍 DuckDuckGo</button>
         </div>
     </div>
 
-    <iframe id="main-frame" src="about:blank"></iframe>
+    <div class="viewer">
+        <div class="address-bar">
+            <input type="text" id="urlField" placeholder="Enter URL here..." onkeydown="if(event.key==='Enter') load()">
+            <button onclick="load()" style="padding: 8px 15px; cursor: pointer;">GO</button>
+        </div>
+        
+        <div class="error-msg">If the site is blank, it blocked the portal.</div>
+        
+        <iframe 
+            id="portal-frame" 
+            src="about:blank"
+            sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+        </iframe>
+    </div>
 </div>
 
 <script>
-    const frame = document.getElementById('main-frame');
-    const dash = document.getElementById('dashboard');
-    const display = document.getElementById('url-display');
+    function load(manualUrl) {
+        const frame = document.getElementById('portal-frame');
+        const input = document.getElementById('urlField');
+        let url = manualUrl || input.value;
 
-    function launch(url) {
-        let target = url || document.getElementById('urlIn').value;
-        if (!target) return;
+        if (!url) return;
 
-        // Auto-format URL
-        if (!target.startsWith('http')) {
-            if (target.includes('.')) target = 'https://' + target;
-            else target = 'https://duckduckgo.com/?q=' + encodeURIComponent(target);
+        // Auto-fix URL
+        if (!url.startsWith('http')) {
+            url = 'https://' + url;
         }
 
-        dash.style.display = 'none';
-        frame.src = target;
-        display.innerText = "Viewing: " + target;
-    }
-
-    function goHome() {
-        dash.style.display = 'block';
-        frame.src = 'about:blank';
-        display.innerText = "Status: Dashboard";
-    }
-
-    function popOut() {
-        if (frame.src !== "about:blank") {
-            window.open(frame.src, '_blank');
-        }
+        input.value = url;
+        frame.src = url;
+        
+        // Focus the frame so scrolling works immediately
+        frame.focus();
     }
 </script>
 
