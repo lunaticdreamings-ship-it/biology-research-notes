@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Power Portal Ultimate</title>
+    <title>Power Portal Elite</title>
     <style>
         * { box-sizing: border-box; }
         body, html { 
@@ -38,7 +38,7 @@
         }
         .btn:hover { background: #333; color: #00d2ff; }
 
-        /* VIEWER AREA */
+        /* VIEWER */
         .viewer { display: flex; flex-direction: column; background: #000; position: relative; }
 
         .address-bar {
@@ -61,27 +61,25 @@
         
         .ctrl-btn { padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .go-btn { background: #00d2ff; }
+        .scroll-btn { background: #555; color: white; }
         .pop-btn { background: #ff8c00; font-size: 16px; }
 
-        /* THE SCROLL FIX: Forced Viewport */
+        /* THE SCROLL FIX */
         .viewport-container {
             flex: 1;
             position: relative;
-            overflow: auto !important; /* Force browser scrollbars */
+            overflow: auto !important;
             background: #fff;
-            /* This ensures the mouse wheel is captured by the container */
-            pointer-events: auto; 
         }
 
         iframe {
             width: 100%;
             height: 100%;
-            min-height: 100.1vh; /* Slightly taller than 100% to force scroll capability */
+            min-height: 101vh; /* Forced height for scroll */
             border: none;
             display: block;
         }
 
-        /* Panic Hint */
         .panic-overlay { position: absolute; bottom: 5px; right: 10px; font-size: 10px; color: #444; pointer-events: none; z-index: 200; }
     </style>
 </head>
@@ -91,22 +89,33 @@
     <div class="sidebar">
         <h2>PORTAL OS</h2>
         <div class="nav-group">
-            <div class="nav-label">Recommended</div>
+            <div class="nav-label">Search Mirrors</div>
             <button class="btn" onclick="load('https://duckduckgo.com')">🔍 DuckDuckGo</button>
             <button class="btn" onclick="load('https://www.bing.com')">🅱️ Bing</button>
-            <button class="btn" onclick="load('https://www.blockaway.net')">🌐 BlockAway Proxy</button>
+            <button class="btn" onclick="load('https://search.brave.com')">🦁 Brave Search</button>
+
+            <div class="nav-label">Free Proxies (No Login)</div>
+            <button class="btn" onclick="load('https://www.croxyproxy.com')">🚀 CroxyProxy</button>
+            <button class="btn" onclick="load('https://nowgg.me')">🎮 Now.gg (Cloud)</button>
             
+            <div class="nav-label">Unblocked Gaming</div>
+            <button class="btn" onclick="load('https://poki.com')">🕹️ Poki</button>
+            <button class="btn" onclick="load('https://www.crazygames.com')">🔥 CrazyGames</button>
+            <button class="btn" onclick="load('https://www.coolmathgames.com')">➕ CoolMath Games</button>
+            <button class="btn" onclick="load('https://armorgames.com')">🛡️ Armor Games</button>
+
             <div class="nav-label">History</div>
             <div id="history-list"></div>
 
-            <div class="nav-label">Bookmarks</div>
-            <button class="btn" onclick="addBookmark()" style="border-style: dashed;">⭐ Save Current</button>
+            <div class="nav-label">Saved</div>
+            <button class="btn" onclick="addBookmark()" style="border: 1px dashed #00d2ff;">⭐ Save Current</button>
             <div id="bookmark-list"></div>
         </div>
     </div>
 
     <div class="viewer">
         <div class="address-bar">
+            <button class="ctrl-btn scroll-btn" onclick="forceScroll()" title="Fix Scrolling">↕</button>
             <input type="text" id="urlField" placeholder="Enter URL..." onkeydown="if(event.key==='Enter') load()">
             <button class="ctrl-btn go-btn" onclick="load()">GO</button>
             <button class="ctrl-btn pop-btn" onclick="popOut()">↗</button>
@@ -125,12 +134,11 @@
     const scroller = document.getElementById('scroller');
     const historyList = document.getElementById('history-list');
 
-    // 1. ESC Panic
+    // ESC Panic
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') window.location.replace('https://google.com');
     });
 
-    // 2. Load Function with History
     function load(manualUrl) {
         let url = manualUrl || input.value;
         if (!url || url === 'about:blank') return;
@@ -143,13 +151,19 @@
 
         input.value = url;
         frame.src = url;
-        
         addToHistory(url);
-        
-        // Forced Scroll Reset
         scroller.scrollTop = 0;
-        // Focus the frame so keys (arrows/space) work for scrolling
-        setTimeout(() => frame.focus(), 500);
+        
+        // Give the frame focus for keyboard scrolling
+        setTimeout(() => frame.focus(), 800);
+    }
+
+    function forceScroll() {
+        // Manually shifts scroll to "wake up" the browser
+        scroller.scrollTop = 10;
+        setTimeout(() => { scroller.scrollTop = 0; }, 100);
+        frame.focus();
+        alert("Scroll focus forced. Try using arrow keys or your wheel now.");
     }
 
     function addToHistory(url) {
@@ -159,38 +173,18 @@
         item.innerHTML = `🕒 ${displayUrl}`;
         item.onclick = () => load(url);
         
-        // Keep only top 5 history items
-        if (historyList.children.length >= 5) {
-            historyList.removeChild(historyList.lastChild);
-        }
+        if (historyList.children.length >= 5) historyList.removeChild(historyList.lastChild);
         historyList.insertBefore(item, historyList.firstChild);
     }
 
-    // 3. Cloaked Pop-Out
     function popOut() {
         const url = input.value;
         if (!url || url === 'about:blank') return;
         const win = window.open('about:blank', '_blank');
         if (win) {
             win.document.write(`
-                <title>Portal</title>
+                <html><head><title>Portal</title></head>
                 <body style="margin:0; overflow:hidden;">
                     <iframe src="${url}" style="width:100%; height:100vh; border:none;"></iframe>
-                </body>
+                </body></html>
             `);
-        }
-    }
-
-    function addBookmark() {
-        const url = input.value;
-        if (!url || url === 'about:blank') return;
-        const list = document.getElementById('bookmark-list');
-        const b = document.createElement('button');
-        b.className = 'btn';
-        b.innerHTML = "📍 " + url.split('//')[1].split('/')[0];
-        b.onclick = () => load(url);
-        list.appendChild(b);
-    }
-</script>
-</body>
-</html>
