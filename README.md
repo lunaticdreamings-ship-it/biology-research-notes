@@ -7,7 +7,7 @@
     <link rel="icon" href="https://ssl.gstatic.com/classroom/favicon.png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: sans-serif; }
+        body, html { width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }
 
         /* CLOAK */
         #cloak { position: fixed; inset: 0; background: #fff; z-index: 10000; display: flex; flex-direction: column; cursor: pointer; }
@@ -15,10 +15,10 @@
         .gc-body { padding: 30px; display: flex; gap: 20px; }
         .gc-card { width: 300px; height: 200px; border: 1px solid #ddd; border-radius: 8px; background: #1a73e8; }
 
-        /* PANIC SCREEN */
+        /* PANIC */
         #panic-screen { display: none; position: fixed; inset: 0; background: #fff; z-index: 20000; padding: 50px; color: #333; }
 
-        /* PORTAL LAYOUT */
+        /* PORTAL */
         #portal { display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; }
         #sidebar { position: absolute; left: 0; top: 0; bottom: 0; width: 260px; background: #111; border-right: 1px solid #333; display: flex; flex-direction: column; z-index: 100; }
         .side-scroll { padding: 15px; flex: 1; overflow-y: auto; color: white; }
@@ -27,7 +27,7 @@
         .btn:hover { border-color: #00d2ff; background: #282828; }
         .panic-btn { background: #d93025; color: white; border: none; font-weight: bold; margin-top: 20px; }
 
-        /* MAIN CONTENT */
+        /* MAIN */
         #main { position: absolute; left: 260px; right: 0; top: 0; bottom: 0; display: flex; flex-direction: column; }
         #toolbar { height: 60px; background: #1a1a1a; padding: 0 20px; display: flex; gap: 15px; align-items: center; border-bottom: 1px solid #333; }
         #url-bar { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #444; background: #050505; color: #00ff00; outline: none; }
@@ -45,25 +45,21 @@
 
     <div id="panic-screen" onclick="this.style.display='none'">
         <h1>Algebra II: Linear Equations</h1>
-        <p style="margin-top:20px;">Solve for $x$: $4x - 12 = 28$</p>
+        <p style="margin-top:20px;">Solve for x: 4x - 12 = 28</p>
     </div>
 
     <div id="portal">
         <div id="sidebar">
             <div class="side-scroll">
-                <div class="label">Proxy Mirrors (Try different ones)</div>
-                <button class="btn" onclick="load('https://proxyium.com')">🛡️ Proxyium (Cluster A)</button>
-                <button class="btn" onclick="load('https://www.croxyproxy.com')">🚀 CroxyProxy (Cluster B)</button>
-                <button class="btn" onclick="load('https://www.blockaway.net')">🌐 BlockAway (Cluster C)</button>
-                <button class="btn" onclick="load('https://webproxy.net')">☁️ WebProxy (Cluster D)</button>
+                <div class="label">GitHub-Friendly Proxies</div>
+                <button class="btn" onclick="load('https://api.allorigins.win/get?url=https://www.google.com')">🌐 AllOrigins (Bypass)</button>
+                <button class="btn" onclick="load('https://www.croxyproxy.com')">🚀 Croxy (Stable)</button>
+                <button class="btn" onclick="load('https://www.blockaway.net')">🌐 BlockAway</button>
+                <button class="btn" onclick="load('https://proxyium.com')">🛡️ Proxyium</button>
 
-                <div class="label">Search Engines</div>
-                <button class="btn" onclick="load('https://www.bing.com')">Bing</button>
-                <button class="btn" onclick="load('https://search.brave.com')">Brave</button>
-
-                <div class="label">Games</div>
-                <button class="btn" onclick="load('https://poki.com')">Poki</button>
-                <button class="btn" onclick="load('https://www.crazygames.com')">CrazyGames</button>
+                <div class="label">Direct Tools</div>
+                <button class="btn" onclick="load('https://www.bing.com')">Bing (Educational)</button>
+                <button class="btn" onclick="load('https://poki.com')">Poki Games</button>
 
                 <div class="label">History</div>
                 <div id="hist-list"></div>
