@@ -3,83 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embedded Web Portal</title>
+    <title>My Workspace</title>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-            overflow: hidden; /* Prevents double scrollbars */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
         }
 
-        /* Top Navigation Bar */
-        .navbar {
-            height: 60px;
-            background: #2c3e50;
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg-gradient);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-color);
+        }
+
+        .search-section {
+            margin-top: 10vh;
+            text-align: center;
+            width: 100%;
+        }
+
+        .search-bar {
+            width: 40%;
+            min-width: 300px;
+            padding: 15px 25px;
+            border-radius: 30px;
+            border: none;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-bar::placeholder { color: rgba(255, 255, 255, 0.7); }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 25px;
+            width: 80%;
+            max-width: 800px;
+            margin-top: 50px;
+        }
+
+        .dial-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .dial-item:hover { transform: scale(1.1); }
+
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            background: var(--card-bg);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
             display: flex;
             align-items: center;
-            padding: 0 20px;
-            color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .navbar input {
-            flex-grow: 1;
-            margin: 0 15px;
-            padding: 8px;
-            border-radius: 4px;
-            border: none;
-        }
-
-        .navbar button {
-            padding: 8px 15px;
-            background: #27ae60;
-            border: none;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        /* The Iframe Window */
-        #content-frame {
-            width: 100%;
-            height: calc(100vh - 60px); /* Subtracts navbar height */
-            border: none;
-            background: white;
-        }
+        .label { font-size: 0.9rem; font-weight: 500; }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
-        <strong>Portal:</strong>
-        <input type="text" id="urlInput" placeholder="Enter URL (e.g., https://www.wikipedia.org)">
-        <button onclick="loadPage()">Go</button>
+    <div class="search-section">
+        <h1>Welcome Back</h1>
+        <form action="https://www.google.com/search" method="GET">
+            <input type="text" name="q" class="search-bar" placeholder="Search the web..." autofocus>
+        </form>
     </div>
 
-    <iframe id="content-frame" src="about:blank"></iframe>
-
-    <script>
-        function loadPage() {
-            const input = document.getElementById('urlInput').value;
-            const frame = document.getElementById('content-frame');
-            
-            // Basic check to ensure the URL starts with http/https
-            if (input.startsWith('http://') || input.startsWith('https://')) {
-                frame.src = input;
-            } else {
-                frame.src = 'https://' + input;
-            }
-        }
-
-        // Allow pressing "Enter" to trigger the button
-        document.getElementById("urlInput").addEventListener("keyup", function(event) {
-            if (event.key === "Enter") {
-                loadPage();
-            }
-        });
-    </script>
-
-</body>
-</html>
+    <div class="grid-container">
+        <a href="https://www.wikipedia.org" class="dial-item">
